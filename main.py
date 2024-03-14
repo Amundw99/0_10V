@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO
 import time
-
+#jeg bare legger inn en liten endring her
 # Angi GPIO-nummeret du vil bruke
 GPIO_PIN = 18
 
