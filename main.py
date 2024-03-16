@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 import time
-#jeg bare legger inn en liten endring her
+#Dette script er bare en styring av GPIO18 ON/OFF (0V vs 3.3V)
+#Ikke noe annet enn PRI boardet.
 # Angi GPIO-nummeret du vil bruke
 GPIO_PIN = 18
 
