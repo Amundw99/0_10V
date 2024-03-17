@@ -15,10 +15,15 @@ bus = smbus.SMBus(1)  # Raspberry Pi 3 uses I2C port 1
 # Function to read a single analog pin value
 def read_adc(channel):
     # Configuration for single-ended measurement on the specified channel
+#    config = (ADS1115_REG_CONFIG_OS_SINGLE |
+#              ADS1115_REG_CONFIG_MUX_SINGLE_0 |
+#              ADS1115_REG_CONFIG_PGA_6_144V |
+#              channel)
+
     config = (ADS1115_REG_CONFIG_OS_SINGLE |
               ADS1115_REG_CONFIG_MUX_SINGLE_0 |
-              ADS1115_REG_CONFIG_PGA_6_144V |
-              channel)
+              ADS1115_REG_CONFIG_PGA_6_144V)
+
     # Write configuration data to ADS1115
     bus.write_i2c_block_data(ADS1115_I2C_ADDR, ADS1115_REG_CONFIG, [(config >> 8) & 0xFF, config & 0xFF])
     # Wait for the conversion to complete (each conversion takes about 8 ms in single-shot mode)
@@ -33,8 +38,11 @@ def read_adc(channel):
 try:
     while True:
         # Read the value from A0 pin
-        adc_value, actual_voltage = read_adc(0)  # 0 represents A0 pin
-        print("Analog value on A0 pin:", adc_value, "analog innspenning er ", round(actual_voltage,3))
+        print(read_adc(1))
+        adc_value_A0, actual_voltage_A0 = read_adc(0)  # 0 represents A0 pin
+        adc_value_A1, actual_voltage_A1 = read_adc(1)  # 0 represents A0 pin
+        print("Analog value on A0 pin:", adc_value_A0, "analog innspenning er ", round(actual_voltage_A0,3))
+        print("Analog value on A1 pin:", adc_value_A1, "analog innspenning er ", round(actual_voltage_A1,3))
         # Wait for one second before reading the value again
         time.sleep(0.3)
 
