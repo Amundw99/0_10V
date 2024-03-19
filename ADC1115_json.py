@@ -6,6 +6,8 @@ import smbus
 import time
 import paho.mqtt.client as mqtt
 import json
+from _datetime import datetime
+import pytz
 
 broker_hostname = "farmer.cloudmqtt.com"
 broker_port = 12212
@@ -88,16 +90,22 @@ try:
         time.sleep(2)
         adc_value_A2, actual_voltage_A2 = read_adc(2)  # 0 represents A0 pin
         time.sleep(2)
-        print("Analog A0 pin:", adc_value_A0, "Analog A0 volt:", round(actual_voltage_A0, 3), "Analog A1 pin:",
+        current_datetime = datetime.now()
+        measure_time = current_datetime.strftime("%d.%m.%Y %H.%M.%S")
+        ts=datetime.timestamp(current_datetime)
+        print("Analog A0 pin:", adc_value_A0, "Analog A0 volt:", round(actual_voltage_A0, 2), "Analog A1 pin:",
               adc_value_A1,
-              "Analog A1 volt:", round(actual_voltage_A1, 3), "Analog A2 pin:", adc_value_A2, "Analog A2 volt:",
-              round(actual_voltage_A2, 3))
-        data = {
-            'A0': actual_voltage_A0,  # Erstatt med din faktiske verdi for A0
-            'A1': actual_voltage_A1,  # Erstatt med din faktiske verdi for A1
-            'A2': actual_voltage_A2  # Erstatt med din faktiske verdi for A2
-        }
+              "Analog A1 volt:", round(actual_voltage_A1, 2), "Analog A2 pin:", adc_value_A2, "Analog A2 volt:",
+              round(actual_voltage_A2, 2))
 
+        #overfører A0,A1 og A2 dom string, så vi ikke får trøbbel i Excel med formtering av float-verdier som blir til datoer
+        data = {"owner": "MM",
+                "dateTime":measure_time,
+                "tid": str(ts),
+                'A0': round(actual_voltage_A0,3),  # Erstatt med din faktiske verdi for A0 og max 2 desialer
+                'A1': round(actual_voltage_A1,3),  # Erstatt med din faktiske verdi for A1
+                'A2': round(actual_voltage_A2,3)  # Erstatt med din faktiske verdi for A2
+            }
         # Konvertere data til JSON-format
         json_data = json.dumps(data)
 
