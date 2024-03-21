@@ -97,14 +97,18 @@ try:
               adc_value_A1,
               "Analog A1 volt:", round(actual_voltage_A1, 2), "Analog A2 pin:", adc_value_A2, "Analog A2 volt:",
               round(actual_voltage_A2, 2))
+        print("Radon A0 pin:", round(actual_voltage_A0*400/3.333, 2), "Analog A0 volt:", round(actual_voltage_A0, 2), "Radon A1 pin:",
+              round(actual_voltage_A1*400/3.333, 2),
+              "Analog A1 volt:", round(actual_voltage_A1, 2), "Radon A2 pin:", round(actual_voltage_A2*400/3.333, 2), "Analog A2 volt:",
+              round(actual_voltage_A2, 2))
 
-        #overfører A0,A1 og A2 dom string, så vi ikke får trøbbel i Excel med formtering av float-verdier som blir til datoer
+        #overfører A0,A1 og A2 som radonverdier
         data = {"owner": "MM",
                 "dateTime":measure_time,
                 "tid": str(ts),
-                'A0': round(actual_voltage_A0,3),  # Erstatt med din faktiske verdi for A0 og max 2 desialer
-                'A1': round(actual_voltage_A1,3),  # Erstatt med din faktiske verdi for A1
-                'A2': round(actual_voltage_A2,3)  # Erstatt med din faktiske verdi for A2
+                'A0': round(actual_voltage_A0*400/3.333, 0),  # Erstatt med din faktiske verdi for A0 og max 2 desialer
+                'A1': round(actual_voltage_A1*400/3.333, 0),  # Erstatt med din faktiske verdi for A1
+                'A2': round(actual_voltage_A2*400/3.333, 0)  # Erstatt med din faktiske verdi for A2
             }
         # Konvertere data til JSON-format
         json_data = json.dumps(data)
@@ -112,7 +116,7 @@ try:
         # Publisere JSON-data til MQTT-topic
         client.publish(broker_topic, json_data)
         # Wait for one second before reading the value again
-        time.sleep(1)
+        time.sleep(42)
 
 
 except KeyboardInterrupt:
